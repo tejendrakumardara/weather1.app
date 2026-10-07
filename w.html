@@ -1,0 +1,237 @@
+<html>
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #222;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 500px;
+            background: linear-gradient(135deg, rgb(3, 20, 35), rgb(114, 173, 198));
+            color: #fff;
+            border-radius: 20px;
+            margin: 100px auto 0;
+            padding: 40px 35px;
+            text-align: center;
+        }
+
+        .search {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search input {
+            border: 0;
+            outline: 0;
+            background: #ebfffc;
+            color: #555;
+            padding: 10px 25px;
+            height: 60px;
+            border-radius: 30px;
+            font-size: 18px;
+            margin-left: 50px;
+        }
+
+        .search button {
+            border: 0;
+            outline: 0;
+            background: #ebfffc;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 30px;
+        }
+
+        img {
+            width: 100px;
+            margin-top: 50px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .weather {
+            padding: 20px 25px;
+        }
+
+        .temp {
+            font-size: 50px;
+        }
+
+        .city {
+            font-size: 50px;
+        }
+
+        .details {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .weather {
+            display: none;
+        }
+
+        .wrong {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+
+        <div class="search">
+            <input type="text" placeholder="enter city name" spellcheck="false" id="c">
+            <button id="btn">search</button>
+        </div>
+
+        <div class="wrong">
+            <p>invalid name</p>
+        </div>
+
+        <div class="weather">
+
+            <img src="rain.png" id="wt">
+
+            <h1 class="temp"></h1>
+
+            <h2 class="city">new york</h2>
+
+            <div class="details">
+
+                <div class="col">
+                    <img src="images.png">
+
+                    <div>
+                        <p class="hum">50%</p>
+                        <p>humidity</p>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <img src="966390.png">
+
+                    <div>
+                        <p class="wind">50kmh</p>
+                        <p>wind speed</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        let city = document.getElementById("c");
+        let srcbtn = document.getElementById("btn");
+
+        const img = document.getElementById("wt");
+
+        const apikey = "10b8f53f2ffe83ce37e57d1fdf41bb85";
+
+        const apiurl = "https://api.openweathermap.org/data/2.5/weather?&units=metric&q=";
+
+
+        async function chkweather(city) {
+
+            const response = await fetch(apiurl + city + `&appid=${apikey}`);
+
+
+            if (response.status == 404) {
+
+                document.querySelector(".wrong").style.display = "block";
+
+                document.querySelector(".weather").style.display = "none";
+
+                return;
+            }
+
+
+            document.querySelector(".wrong").style.display = "none";
+
+
+            var data = await response.json();
+
+
+            document.querySelector(".city").innerHTML = data.name;
+
+            document.querySelector(".temp").innerHTML = data.main.temp + "°C";
+
+            document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+            document.querySelector(".hum").innerHTML = data.main.humidity + "%";
+
+
+            // Changing image according to weather condition
+
+            if (data.weather[0].main == "Clouds") {
+
+                img.src = "cloud.png";
+
+            }
+
+            else if (data.weather[0].main == "Rain") {
+
+                img.src = "rain.png";
+
+            }
+
+            else if (data.weather[0].main == "Clear") {
+
+                img.src = "clear.png";
+
+            }
+
+            else if (data.weather[0].main == "Drizzle") {
+
+                img.src = "drizzle.png";
+
+            }
+
+            else if (data.weather[0].main == "Mist") {
+
+                img.src = "mist.jpeg";
+
+            }
+
+            else if (data.weather[0].main == "Snow") {
+
+                img.src = "snow.jpeg";
+
+            }
+
+            else if (data.weather[0].main == "Thunderstorm") {
+
+                img.src = "thunder.png";
+
+            }
+
+
+            document.querySelector(".weather").style.display = "block";
+
+        }
+
+
+        srcbtn.addEventListener("click", () => {
+
+            chkweather(city.value);
+
+        });
+
+    </script>
+
+</body>
+</html>
